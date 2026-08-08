@@ -14,6 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 chrome.tabs.sendMessage(tabs[0].id, {
                     command: "toggleGlobal",
                     state: isExActive
+                }, (response) => {
+                    if (chrome.runtime.lastError) {
+                        console.log("Night Flash: Tab not active or restricted page.")
+                    }
                 });
             }
         });

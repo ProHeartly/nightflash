@@ -53,19 +53,22 @@ chrome.storage.local.get(['nightFlashState'], (result) => {
     }
 });
 
-chrome.runtime.onMessage.addEventListener((request, sender, sendResponse) => {
-    if (request.command === 'toggleGlobal') {
-        isExActive = request.state;
+chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (namespace === 'local' && changes.nightFlashState) {
+        isExActive = changes.nightFlashState.newValue;
 
         if (!isExActive) {
-            ctx.clearRect(0, 0, w, h)
+            ctx.clearRect(0, 0, w, h);
         }
     }
-})
+});
 
 window.addEventListener('keydown', (e) => {
     if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'f') {
-        isExActive = !isExActive;
+        chrome.storage.local.get(['nightFlashState'], (result) => {
+            let current = result.nightFlashState !== false;
+            chrome.storage.local.set({ nightFlashState: !current });
+        });
     }
 });
 
