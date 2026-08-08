@@ -1,0 +1,14 @@
+{
+    "manifest_version": 3,
+    "name": "night flash",
+    "version": "1.0",
+    "description": "A extension which makes browsing the web fun!! It introduces total night to websites, like the whole website becomes dark and foggy and the user's cursor acts as a flash but light are yellowish for maximum vibes.",
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "css": ["style.css"],
+            "js": ["content.js"],
+            "run_at": "document_end"
+        }
+    ]
+}
