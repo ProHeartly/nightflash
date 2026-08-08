@@ -3,4 +3,8 @@
     top: 0;
     left: 0;
     pointer-events: none;
+    background: transparent; 
+    border: none;
+    margin: 0;
+    padding: 0;
 }

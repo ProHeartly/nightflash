@@ -27,8 +27,8 @@ resize();
 let mouse = { x: w / 2, y: h / 2 };
 let fluidHole = { x: w / 2, y: h / 2, vx: 0, vy: 0 };
 
-const TENSION = 0.03;
-const DAMPENING = 0.85;
+const TENSION = 0.05;
+const DAMPENING = 0.6;
 
 
 window.addEventListener('mousemove', (e) => {
@@ -56,17 +56,35 @@ function animate() {
 
     ctx.globalCompositeOperation = 'destination-out';
 
+    let speed = Math.sqrt(fluidHole.vx * fluidHole.vx + fluidHole.vy * fluidHole.vy);
+
+    let angle = Math.atan2(fluidHole.vy, fluidHole.vx);
+
+    let stretch = 1 + Math.min(speed * 0.03, 1.5);
+    let squish = 1 - Math.min(speed * 0.015, 0.05);
+
+    ctx.save();
+    ctx.translate(fluidHole.x, fluidHole.y);
+
+    if (speed > 0.1) {
+        ctx.rotate(angle);
+    }
+
+    ctx.scale(stretch, squish);
+
     let gradient = ctx.createRadialGradient(
-        fluidHole.x, fluidHole.y, 20,
-        fluidHole.x, fluidHole.y, 180
+        0, 0, 20,
+        0, 0, 180
     );
     gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
     gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
     ctx.fillStyle = gradient;
     ctx.beginPath();
-    ctx.arc(fluidHole.x, fluidHole.y, 180, 0, Math.PI * 2);
+    ctx.arc(0, 0, 180, 0, Math.PI * 2);
     ctx.fill();
+
+    ctx.restore();
 
     requestAnimationFrame(animate);
 }
