@@ -30,10 +30,20 @@ let fluidHole = { x: w / 2, y: h / 2, vx: 0, vy: 0 };
 const TENSION = 0.05;
 const DAMPENING = 0.6;
 
+let currentRadius = 180;
+let isSleeping = false;
+let sleepTimer;
 
 window.addEventListener('mousemove', (e) => {
     mouse.x = e.clientX;
     mouse.y = e.clientY;
+
+    isSleeping = false;
+    clearTimeout(sleepTimer);
+
+    sleepTimer = setTimeout( () => {
+        isSleeping = true;
+    }, 120000);
 });
 
 
@@ -55,31 +65,59 @@ function animate() {
     ctx.fillStyle = 'rgba(2, 6, 9, 0.95)';
     ctx.fillRect(0, 0, w, h);
 
+    let targetRadius = isSleeping ? 0: 180;
+
+    currentRadius += (targetRadius - currentRadius) * 0.05;
+    let displayRadius = currentRadius;
+    let emberCenter = 0.15;
+    let emberMid = 0.05;
+
+    let wobbleX = 0;
+    let wobbleY = 0;
+
+    if (isSleeping && currentRadius < 100 && currentRadius > 2) {
+        displayRadius += (Math.random() - 0.5) * 6;
+        
+        wobbleX = (Math.random() - 0.5) * 10;
+        wobbleY = (Math.random() - 0.5) * 10;
+        
+        emberCenter = 0.35;
+        emberMid = 0.15;
+    }
+
+    if (displayRadius < 0) displayRadius = 0;
+
+    let drawX = fluidHole.x + wobbleX;
+    let drawY = fluidHole.y + wobbleY;
+
     ctx.globalCompositeOperation = 'destination-out';
     
 
-    let mainGradient = ctx.createRadialGradient(fluidHole.x, fluidHole.y, 20, fluidHole.x, fluidHole.y, 180);
+    let mainGradient = ctx.createRadialGradient(drawX, drawY, 20, drawX, drawY, displayRadius);
     mainGradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
     mainGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
     ctx.fillStyle = mainGradient;
     ctx.beginPath();
-    ctx.arc(fluidHole.x, fluidHole.y, 180, 0, Math.PI * 2);
+    ctx.arc(drawX, drawY, displayRadius, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.globalCompositeOperation = 'source-over';
-    
-    let amberGradient = ctx.createRadialGradient(fluidHole.x, fluidHole.y, 10, fluidHole.x, fluidHole.y, 190);
+    if (displayRadius > 2) {
+        ctx.globalCompositeOperation = 'source-over';
+        
+        let glowRadius = displayRadius + 10;
+        let amberGradient = ctx.createRadialGradient(drawX, drawY, 10, drawX, drawY, glowRadius);
 
-    amberGradient.addColorStop(0, 'rgba(255, 179, 71, 0.15)');
-    amberGradient.addColorStop(0.5, 'rgba(255, 179, 71, 0.05)');
-    amberGradient.addColorStop(1, 'rgba(255, 179, 71, 0)');
-    
-    ctx.fillStyle = amberGradient;
-    ctx.beginPath();
-    ctx.arc(fluidHole.x, fluidHole.y, 190, 0, Math.PI * 2);
-    ctx.fill();
-    
+        amberGradient.addColorStop(0, `rgba(255, 179, 71, ${emberCenter})`);
+        amberGradient.addColorStop(0.5, `rgba(255, 179, 71, ${emberMid})`);
+        amberGradient.addColorStop(1, 'rgba(255, 179, 71, 0)');
+        
+        ctx.fillStyle = amberGradient;
+        ctx.beginPath();
+        ctx.arc(drawX, drawY, glowRadius, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
     requestAnimationFrame(animate);
 }
 
