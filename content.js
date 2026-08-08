@@ -67,6 +67,19 @@ function animate() {
     ctx.arc(fluidHole.x, fluidHole.y, 180, 0, Math.PI * 2);
     ctx.fill();
 
+    ctx.globalCompositeOperation = 'source-over';
+    
+    let amberGradient = ctx.createRadialGradient(fluidHole.x, fluidHole.y, 10, fluidHole.x, fluidHole.y, 190);
+
+    amberGradient.addColorStop(0, 'rgba(255, 179, 71, 0.15)');
+    amberGradient.addColorStop(0.5, 'rgba(255, 179, 71, 0.05)');
+    amberGradient.addColorStop(1, 'rgba(255, 179, 71, 0)');
+    
+    ctx.fillStyle = amberGradient;
+    ctx.beginPath();
+    ctx.arc(fluidHole.x, fluidHole.y, 190, 0, Math.PI * 2);
+    ctx.fill();
+    
     requestAnimationFrame(animate);
 }
 
