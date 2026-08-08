@@ -37,6 +37,10 @@ window.addEventListener('mousemove', (e) => {
 });
 
 
+let puddles = [];
+let lastPuddle = { x: fluidHole.x, y: fluidHole.y };
+const PUDDLE_SPACING = 100;
+
 function animate() {
     let dx = mouse.x - fluidHole.x;
     let dy = mouse.y - fluidHole.y;
@@ -50,41 +54,50 @@ function animate() {
     fluidHole.x += fluidHole.vx;
     fluidHole.y += fluidHole.vy;
 
+    let speed = Math.sqrt(fluidHole.vx * fluidHole.vx + fluidHole.vy * fluidHole.vy);
+
     ctx.globalCompositeOperation = 'source-over';
-    ctx.fillStyle = 'rgba(10, 15, 20, 0.95)';
+    ctx.fillStyle = 'rgba(2, 6, 9, 0.95)';
     ctx.fillRect(0, 0, w, h);
 
     ctx.globalCompositeOperation = 'destination-out';
+    
+    let dist = Math.hypot(fluidHole.x - lastPuddle.x, fluidHole.y - lastPuddle.y);
 
-    let speed = Math.sqrt(fluidHole.vx * fluidHole.vx + fluidHole.vy * fluidHole.vy);
-
-    let angle = Math.atan2(fluidHole.vy, fluidHole.vx);
-
-    let stretch = 1 + Math.min(speed * 0.03, 1.5);
-    let squish = 1 - Math.min(speed * 0.015, 0.05);
-
-    ctx.save();
-    ctx.translate(fluidHole.x, fluidHole.y);
-
-    if (speed > 0.1) {
-        ctx.rotate(angle);
+    if (dist > PUDDLE_SPACING) {
+        puddles.push({ x: fluidHole.x, y: fluidHole.y, r: 200, o: 0.4 });
+        lastPuddle = { x: fluidHole.x, y: fluidHole.y };
     }
 
-    ctx.scale(stretch, squish);
 
-    let gradient = ctx.createRadialGradient(
-        0, 0, 20,
-        0, 0, 180
-    );
-    gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-    gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    for (let i = puddles.length -1; i>= 0; i--) {
+        let p = puddles[i];
+        p.o -= 0.015;
+        p.r -= 0.2;
 
-    ctx.fillStyle = gradient;
+        if (p.o <= 0) {
+            puddles.slice(i, 1);
+            continue
+        }
+
+        let pGradient = ctx.createRadialGradient(p.x, p.y, 10, p.x, p.y, p.r);
+        pGradient.addColorStop(0, `rgba(255, 255, 255, ${p.o})`);
+        pGradient.addColorStop(1, `rgba(255, 255, 255, ${p.o})`);
+
+        ctx.fillStyle = pGradient;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    let mainGradient = ctx.createRadialGradient(fluidHole.x, fluidHole.y, 20, fluidHole.x, fluidHole.y, 180);
+    mainGradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+    mainGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+    ctx.fillStyle = mainGradient;
     ctx.beginPath();
-    ctx.arc(0, 0, 180, 0, Math.PI * 2);
+    ctx.arc(fluidHole.x, fluidHole.y, 180, 0, Math.PI * 2);
     ctx.fill();
-
-    ctx.restore();
 
     requestAnimationFrame(animate);
 }
