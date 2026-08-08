@@ -47,7 +47,22 @@ window.addEventListener('mousemove', (e) => {
 });
 
 
+let isExActive = true;
+
+window.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'f') {
+        isExActive = !isExActive;
+    }
+});
+
 function animate() {
+    if (!isExActive) {
+        ctx.clearRect(0, 0, w, h);
+        requestAnimationFrame(animate);
+        return;
+    }
+
+
     let dx = mouse.x - fluidHole.x;
     let dy = mouse.y - fluidHole.y;
 
