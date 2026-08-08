@@ -46,8 +46,22 @@ window.addEventListener('mousemove', (e) => {
     }, 120000);
 });
 
-
 let isExActive = true;
+chrome.storage.local.get(['nightFlashState'], (result) => {
+    if (result.nightFlashState === false) {
+        isExActive = false;
+    }
+});
+
+chrome.runtime.onMessage.addEventListener((request, sender, sendResponse) => {
+    if (request.command === 'toggleGlobal') {
+        isExActive = request.state;
+
+        if (!isExActive) {
+            ctx.clearRect(0, 0, w, h)
+        }
+    }
+})
 
 window.addEventListener('keydown', (e) => {
     if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'f') {
