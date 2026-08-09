@@ -1,3 +1,4 @@
+// --Main script file
 
 const canvas = document.createElement('canvas');
 
@@ -47,16 +48,38 @@ resize();
 initCloud();
 
 const fireflies = [];
-const NUM_FIREFLIES = 40;
 
-for (let i = 0; i < NUM_FIREFLIES; i++) {
-    fireflies.push({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 2,
-        vy: (Math.random() - 0.5) * 2,
-        size: Math.random() * 2 + 1
-    });
+let targetFireflyCount = 40;
+
+chrome.storage.local.get(['nfFireflies'], (result) => {
+    if (result.nfFireflies !== undefined) {
+        targetFireflyCount = result.nfFireflies;
+        adjustFireflyCount(targetFireflyCount);
+    }
+});
+
+chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (namespace === 'local') {
+        if (changes.nfFireflies) {
+            targetFireflyCount = changes.nfFireflies.newValue;
+            adjustFireflyCount(targetFireflyCount);
+        }
+    }
+});
+
+function adjustFireflyCount(count) {
+    while (fireflies.length < count) {
+        fireflies.push({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            vx: (Math.random() - 0.5) * 2,
+            vy: (Math.random() - 0.5) * 2,
+            size: Math.random() * 2 + 1
+        });
+    }
+    while (fireflies.length > count) {
+        fireflies.pop();
+    }
 }
 
 let mouse = { x: w / 2, y: h / 2 };

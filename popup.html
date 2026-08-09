@@ -6,7 +6,7 @@
 </head>
 <body>
     <div class="glass-panel">
-        <h2>Night Flash</h2>
+        <h1>Night Flash</h1>
 
         <div class="toggle-container">
             <span class="toggle-label">Global Switch</span>
@@ -16,7 +16,7 @@
             </label>
         </div>
         <p class="subtitle">Site-specific controls available on page. (press ctrl+shift+f)</p>
-        <div class="controll-group">
+        <div class="control-group">
             <span class="toggle-label">Torch Size</span>
             <div class="preset-group" id="sizePresets">
                 <button data-size="100" class="preset-btn">Small</button>
@@ -24,13 +24,18 @@
                 <button data-size="300" class="preset-btn">Large</button>
             </div>
         </div>
-        <div class="controll-group">
+        <div class="control-group">
             <span class="toggle-label">Torch Temperature</span>
             <div class="preset-group" id="tempPresets">
                 <button data-temp="100,200,255" class="preset-btn">Cool</button>
                 <button data-temp="255,255,255" class="preset-btn">Neutral</button>
                 <button data-temp="255,179,71" class="preset-btn active">Warm</button>
             </div>
+        </div>
+        <div class="control-group">
+            <span class="toggle-label">Number of firefly</span>
+            <label for="fireflySlider">Firefly count: <span id="fireflyCountValue">40</span></label>
+            <input type="range" id="fireflySlider" min="0" max="200" value="40" step="10">
         </div>
     </div>
     <script src="popup.js"></script>

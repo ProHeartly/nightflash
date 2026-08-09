@@ -1,13 +1,27 @@
+// --Popup screen script
+
 document.addEventListener('DOMContentLoaded', () => {
     const globalToggle = document.getElementById('globalToggle');
     const sizeBtns = document.querySelectorAll('#sizePresets .preset-btn');
     const tempBtns = document.querySelectorAll('#tempPresets .preset-btn');
+    const fireflySlider = document.getElementById('fireflySlider');
+    const fireflyCountValue = document.getElementById('fireflyCountValue');
 
-    chrome.storage.local.get(['nightFlashState', 'nfSize', 'nfTemp'], (result) => {
+    chrome.storage.local.get(['nightFlashState', 'nfSize', 'nfTemp', 'nfFireflies'], (result) => {
         globalToggle.checked = result.nightFlashState !== false;
 
         if (result.nfSize) updateActiveButton(sizeBtns, result.nfSize, 'size');
         if (result.nfTemp) updateActiveButton(tempBtns, result.nfTemp, 'temp');
+
+        let count = result.nfFireflies !== undefined ? result.nfFireflies : 40;
+        fireflySlider.value = count;
+        fireflyCountValue.textContent = count;
+    });
+
+    fireflySlider.addEventListener('input', (e) => {
+        let count = parseInt(e.target.value);
+        fireflyCountValue.textContent = count;
+        chrome.storage.local.set({ nfFireflies: count });
     });
 
     globalToggle.addEventListener('change', (e) => {
