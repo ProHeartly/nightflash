@@ -87,3 +87,42 @@ input:checked + .slider {
 input:checked + .slider:before { 
     transform: translateX(20px); 
 }
+
+
+.control-group {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.preset-group {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px;
+}
+
+.preset-btn {
+    flex: 1;
+    background: transparent;
+    color: #94a3b8;
+    border: 1px solid transparent;
+    padding: 6px 0;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.preset-btn:hover {
+    color: #e2e8f0;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.preset-btn.active {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.5);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+}

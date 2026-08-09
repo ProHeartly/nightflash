@@ -1,8 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
     const globalToggle = document.getElementById('globalToggle');
+    const sizeBtns = document.querySelectorAll('#sizePresets .preset-btn');
+    const tempBtns = document.querySelectorAll('#tempPresets .preset-btn');
 
-    chrome.storage.local.get(['nightFlashState'], (result) => {
+    chrome.storage.local.get(['nightFlashState', 'nfSize', 'nfTemp'], (result) => {
         globalToggle.checked = result.nightFlashState !== false;
+
+        if (result.nfSize) updateActiveButton(sizeBtns, result.nfSize, 'size');
+        if (result.nfTemp) updateActiveButton(tempBtns, result.nfTemp, 'temp');
     });
 
     globalToggle.addEventListener('change', (e) => {
@@ -24,4 +29,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
         console.log("Night Flash Global State:", isExActive);
     });
+
+    sizeBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const sizeVal = e.target.getAttribute('data-size');
+            chrome.storage.local.set({ nfSize: sizeVal });
+            updateActiveButton(sizeBtns, sizeVal, 'size');
+        });
+    });
+
+    tempBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const tempVal = e.target.getAttribute('data-temp');
+            chrome.storage.local.set({ nfTemp: tempVal });
+            updateActiveButton(tempBtns, tempVal, 'temp');
+        });
+    });
+
+    function updateActiveButton(button, targetVal, type) {
+        button.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.getAttribute(`data-${type}`) == targetVal) {
+                btn.classList.add('active');
+            }
+        });
+    }
 });

@@ -9,13 +9,29 @@
         <h2>Night Flash</h2>
 
         <div class="toggle-container">
-            <span class="toggle-label">Global Power</span>
+            <span class="toggle-label">Global Switch</span>
             <label class="switch">
                 <input type="checkbox" id="globalToggle" checked>
                 <span class="slider"></span>
             </label>
         </div>
         <p class="subtitle">Site-specific controls available on page. (press ctrl+shift+f)</p>
+        <div class="controll-group">
+            <span class="toggle-label">Torch Size</span>
+            <div class="preset-group" id="sizePresets">
+                <button data-size="100" class="preset-btn">Small</button>
+                <button data-size="180" class="preset-btn active">Medium</button>
+                <button data-size="300" class="preset-btn">Large</button>
+            </div>
+        </div>
+        <div class="controll-group">
+            <span class="toggle-label">Torch Temperature</span>
+            <div class="preset-group" id="tempPresets">
+                <button data-temp="100,200,255" class="preset-btn">Cool</button>
+                <button data-temp="255,255,255" class="preset-btn">Neutral</button>
+                <button data-temp="255,179,71" class="preset-btn active">Warm</button>
+            </div>
+        </div>
     </div>
     <script src="popup.js"></script>
 </body>

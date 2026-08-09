@@ -47,18 +47,32 @@ window.addEventListener('mousemove', (e) => {
 });
 
 let isExActive = true;
-chrome.storage.local.get(['nightFlashState'], (result) => {
+let baseRadius = 180;
+let torchColor = "255, 179, 71";
+
+chrome.storage.local.get(['nightFlashState', 'nfSize', 'nfTemp'], (result) => {
     if (result.nightFlashState === false) {
         isExActive = false;
     }
+    if (result.nfSize) baseRadius = result.nfSize;
+    if (result.nfTemp) torchColor = result.nfTemp;
 });
 
 chrome.storage.onChanged.addListener((changes, namespace) => {
-    if (namespace === 'local' && changes.nightFlashState) {
-        isExActive = changes.nightFlashState.newValue;
+    if (namespace === 'local') {
+        if (changes.nightFlashState){
+            isExActive = changes.nightFlashState.newValue;
 
-        if (!isExActive) {
-            ctx.clearRect(0, 0, w, h);
+            if (!isExActive) {
+                ctx.clearRect(0, 0, w, h);
+            }
+        }
+        if (changes.nfSize) {
+            baseRadius = changes.nfSize.newValue;
+        }
+
+        if (changes.nfTemp) {
+            torchColor = changes.nfTemp.newValue;
         }
     }
 });
@@ -97,7 +111,7 @@ function animate() {
     ctx.fillStyle = 'rgba(2, 6, 9, 0.95)';
     ctx.fillRect(0, 0, w, h);
 
-    let targetRadius = isSleeping ? 0: 180;
+    let targetRadius = isSleeping ? 0: baseRadius;
 
     currentRadius += (targetRadius - currentRadius) * 0.05;
     let displayRadius = currentRadius;
@@ -117,7 +131,7 @@ function animate() {
         emberMid = 0.15;
     }
 
-    if (displayRadius < 0) displayRadius = 0;
+    let safeRadius = Math.max(displayRadius, 20.1);
 
     let drawX = fluidHole.x + wobbleX;
     let drawY = fluidHole.y + wobbleY;
@@ -125,24 +139,24 @@ function animate() {
     ctx.globalCompositeOperation = 'destination-out';
     
 
-    let mainGradient = ctx.createRadialGradient(drawX, drawY, 20, drawX, drawY, displayRadius);
+    let mainGradient = ctx.createRadialGradient(drawX, drawY, 20, drawX, drawY, safeRadius);
     mainGradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
     mainGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
     ctx.fillStyle = mainGradient;
     ctx.beginPath();
-    ctx.arc(drawX, drawY, displayRadius, 0, Math.PI * 2);
+    ctx.arc(drawX, drawY, safeRadius, 0, Math.PI * 2);
     ctx.fill();
 
-    if (displayRadius > 2) {
+    if (safeRadius > 2) {
         ctx.globalCompositeOperation = 'source-over';
         
         let glowRadius = displayRadius + 10;
         let amberGradient = ctx.createRadialGradient(drawX, drawY, 10, drawX, drawY, glowRadius);
 
-        amberGradient.addColorStop(0, `rgba(255, 179, 71, ${emberCenter})`);
-        amberGradient.addColorStop(0.5, `rgba(255, 179, 71, ${emberMid})`);
-        amberGradient.addColorStop(1, 'rgba(255, 179, 71, 0)');
+        amberGradient.addColorStop(0, `rgba(${torchColor}, ${emberCenter})`);
+        amberGradient.addColorStop(0.5, `rgba(${torchColor}, ${emberMid})`);
+        amberGradient.addColorStop(1, `rgba(${torchColor}, 0)`);
         
         ctx.fillStyle = amberGradient;
         ctx.beginPath();
