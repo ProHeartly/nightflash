@@ -78,11 +78,28 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 });
 
 window.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'f') {
+    console.log(`Night Flash heard: ${e.code} | Ctrl: ${e.ctrlKey} | Shift: ${e.shiftKey} | Alt: ${e.altKey}`);
+    
+    // ctrl + shift + f -> global switch
+    if (e.ctrlKey && e.shiftKey && !e.altKey && e.key.toLowerCase() === 'f') {
         chrome.storage.local.get(['nightFlashState'], (result) => {
             let current = result.nightFlashState !== false;
             chrome.storage.local.set({ nightFlashState: !current });
         });
+    }
+
+    // ctrl + shift + 1/2/3 -> torch size
+    if (e.ctrlKey && e.shiftKey && !e.altKey) {
+        if (e.code === 'Digit1') chrome.storage.local.set({ nfSize: 100 });
+        if (e.code === 'Digit2') chrome.storage.local.set({ nfSize: 180 });
+        if (e.code === 'Digit3') chrome.storage.local.set({ nfSize: 300 });
+    }
+
+    // ctrl + shift + alt + 1/2/3 -> temperature
+    if (e.ctrlKey && e.shiftKey && e.altKey) {
+        if (e.code === 'Digit1') chrome.storage.local.set({ nfTemp: "100,200,255" });
+        if (e.code === 'Digit2') chrome.storage.local.set({ nfTemp: "255,255,255" });
+        if (e.code === 'Digit3') chrome.storage.local.set({ nfTemp: "255,179,71" });
     }
 });
 

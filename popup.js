@@ -54,4 +54,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    chrome.storage.onChanged.addListener((changes, namespace) => {
+        if (namespace === 'local') {
+            if (changes.nfSize) {
+                updateActiveButton(sizeBtns, parseInt(changes.nfSize.newValue), 'size');
+            }
+
+            if (changes.nfTemp) {
+                updateActiveButton(tempBtns, changes.nfTemp.newValue, 'temp');
+            }
+
+            if (changes.nightFlashState) {
+                globalToggle.checked = changes.nightFlashState.newValue;
+            }
+        }
+    });
 });
