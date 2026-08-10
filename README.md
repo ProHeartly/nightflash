@@ -17,6 +17,6 @@ A fun little chromium extension which creates night time vibes with night fog. A
     It will eat up the space when you leave.
 
 * ### sleep timer:
-    After 2 minutes of inactivity, the light will start to dim and flicker than after some seconds, it will go off.
+    After selected time (default: 2min) of inactivity, the light will start to dim and flicker than after some seconds, it will go off.
 
 

@@ -6,8 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const tempBtns = document.querySelectorAll('#tempPresets .preset-btn');
     const fireflySlider = document.getElementById('fireflySlider');
     const fireflyCountValue = document.getElementById('fireflyCountValue');
+    const sleepTimerDropdown = document.getElementById('sleepTimerDropdown');
 
-    chrome.storage.local.get(['nightFlashState', 'nfSize', 'nfTemp', 'nfFireflies'], (result) => {
+    chrome.storage.local.get(['nightFlashState', 'nfSize', 'nfTemp', 'nfFireflies', 'nfSleepTimer'], (result) => {
         globalToggle.checked = result.nightFlashState !== false;
 
         if (result.nfSize) updateActiveButton(sizeBtns, result.nfSize, 'size');
@@ -16,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let count = result.nfFireflies !== undefined ? result.nfFireflies : 40;
         fireflySlider.value = count;
         fireflyCountValue.textContent = count;
+
+        if (result.nfSleepTimer) { sleepTimerDropdown.value = result.nfSleepTimer; }
     });
 
     fireflySlider.addEventListener('input', (e) => {
@@ -82,5 +85,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 globalToggle.checked = changes.nightFlashState.newValue;
             }
         }
+    });
+
+    sleepTimerDropdown.addEventListener('change', (e) => {
+        chrome.storage.local.set({ nfSleepTimer: e.target.value});
     });
 });

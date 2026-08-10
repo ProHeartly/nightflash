@@ -18,6 +18,8 @@ let w, h;
 const clouds = [];
 const spacing = 45;
 
+let sleepDelay = 120000;
+let neverSleep = false;
 
 function initCloud() {
     clouds.length = 0;
@@ -64,6 +66,17 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
             targetFireflyCount = changes.nfFireflies.newValue;
             adjustFireflyCount(targetFireflyCount);
         }
+
+        if (changes.nfSleepTimer) {
+            if (changes.nfSleepTimer.newValue === 'never') {
+                neverSleep = true;
+                isSleeping = false;
+                clearTimeout(sleepTimer);
+            } else {
+                neverSleep = false;
+                sleepDelay = parseInt(changes.nfSleepTimer.newValue);
+            }
+        }
     }
 });
 
@@ -98,10 +111,12 @@ window.addEventListener('mousemove', (e) => {
 
     isSleeping = false;
     clearTimeout(sleepTimer);
-
-    sleepTimer = setTimeout( () => {
+    
+    if (!neverSleep) {
+        sleepTimer = setTimeout( () => {
         isSleeping = true;
-    }, 120000);
+    }, sleepDelay);
+    }
 });
 
 let isExActive = true;

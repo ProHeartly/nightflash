@@ -37,6 +37,17 @@
             <label for="fireflySlider">Firefly count: <span id="fireflyCountValue">40</span></label>
             <input type="range" id="fireflySlider" min="0" max="200" value="40" step="10">
         </div>
+        <div class="control-group">
+            <span class="toggle-label">Sleep Time</span>
+            <label for="sleepTimerDropdown">time: </label>
+            <select id="sleepTimerDropdown">
+                <option value="30000">30 Sec</option>
+                <option value="60000">1 Min</option>
+                <option value="120000" selected>2 Min</option>
+                <option value="300000">5 Min</option>
+                <option value="never">Never sleep(like me)</option>
+            </select>
+        </div>
     </div>
     <script src="popup.js"></script>
 </body>
