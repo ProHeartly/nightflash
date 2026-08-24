@@ -294,17 +294,22 @@ function animate() {
         f.vx += (Math.random() - 0.5) * 0.3;
         f.vy += (Math.random() - 0.5) * 0.3;
 
-        let speed = Math.sqrt(f.vx * f.vx + f.vy * f.vy);
-        if (speed > 2) {
+        let speedSq = f.vx * f.vx + f.vy * f.vy;
+        if (speedSq > 4) {
+            let speed = Math.sqrt(speedSq);
             f.vx = (f.vx / speed) * 2;
             f.vy = (f.vy / speed) * 2;
         }
 
         let fdx = f.x - drawX;
         let fdy = f.y - drawY;
-        let dist = Math.sqrt(fdx * fdx + fdy * fdy);
+        let distSq = fdx * fdx + fdy * fdy;
 
-        if (dist < safeRadius + 80) {
+        let interactRadius = safeRadius + 80;
+        let interactRadiusSq = interactRadius * interactRadius;
+
+        if (distSq < interactRadiusSq) {
+            let dist = Math.sqrt(distSq);
             f.vx += (fdx / dist) * 1.5;
             f.vx += (fdy / dist) * 1.5;
         }
