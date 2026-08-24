@@ -2,7 +2,7 @@
 
 ![](image.png)
 
-A fun little chromium extension which creates night time vibes with night fog. And your cursor acts as a flash. With some fireflies for the vibess. It also has pop up menu with which you can disable it, change torch size, torch/light temperature and edit the number of fireflies you want in the screen (don't go overboard, it might lag).
+A fun little chromium and firefox extension which creates night time vibes with night fog. And your cursor acts as a flash. With some fireflies for the vibess. It also has pop up menu with which you can disable it, change torch size, torch/light temperature and edit the number of fireflies you want in the screen (don't go overboard, it might lag).
 
 ## some cool things:
 * ### Shortcut keys:

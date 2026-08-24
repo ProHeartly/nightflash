@@ -14,5 +14,12 @@
     ],
     "action": {
         "default_popup": "popup.html"
+    },
+
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "nightflash@heartlyy.dev",
+            "strict_min_version": "125.0"
+        }
     }
 }

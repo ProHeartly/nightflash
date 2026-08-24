@@ -20,6 +20,7 @@ const spacing = 45;
 
 let sleepDelay = 120000;
 let neverSleep = false;
+let resizeTimeout;
 
 function initCloud() {
     clouds.length = 0;
@@ -42,9 +43,20 @@ function resize() {
     canvas.height = h;
 }
 
+// window.addEventListener('resize', () => {
+//     resize();
+//     initCloud();
+// });
+// resize();
+// initCloud();
+
 window.addEventListener('resize', () => {
-    resize();
-    initCloud();
+    clearTimeout(resizeTimeout);
+
+    resizeTimeout = setTimeout(() => {
+        resize();
+        initCloud();
+    }, 200);
 });
 resize();
 initCloud();
