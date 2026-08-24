@@ -236,23 +236,38 @@ function animate() {
     ctx.globalCompositeOperation = 'source-over';
     ctx.clearRect(0, 0, w, h);
     ctx.fillStyle = 'rgba(2, 6, 9, 0.95)';
+    ctx.fillRect(0, 0, w, h);
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+
+    let cullRange = safeRadius + 100;
 
     clouds.forEach(cloud => {
+        if (cloud.x < drawX - cullRange || cloud.x > drawX + cullRange ||
+            cloud.y < drawY - cullRange || cloud.y > drawY + cullRange) {
+                cloud.currentRadius = cloud.maxRadius;
+                return;
+        }
+
         let cdx = cloud.x - drawX;
         let cdy = cloud.y - drawY;
-        let distance = Math.sqrt(cdx * cdx + cdy * cdy);
+        let distSq = (cdx * cdx) + (cdy * cdy);
+        
+        let targetSq = (safeRadius + 20) * (safeRadius + 20);
+        let innerSq = (safeRadius * 0.5) * (safeRadius * 0.5);
 
-        let target = distance < (safeRadius + 20) ? 0: cloud.maxRadius;
-
+        let target = distSq < targetSq ? 0 : cloud.maxRadius;
         let speed = target === 0 ? 0.6 : 0.05;
 
-        if (distance < safeRadius * 0.5) speed = 0.9;
+        if (distSq < innerSq) speed = 0.9;
 
         cloud.currentRadius += (target - cloud.currentRadius) * speed;
+        
+        let holeSize = cloud.maxRadius - cloud.currentRadius;
 
-        if (cloud.currentRadius > 0.5) {
+        if (holeSize > 0.5) {
             ctx.beginPath();
-            ctx.arc(cloud.x, cloud.y, cloud.currentRadius, 0, Math.PI * 2);
+            ctx.arc(cloud.x, cloud.y, holeSize, 0, Math.PI * 2);
             ctx.fill();
         }
     });
