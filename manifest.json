@@ -19,7 +19,9 @@
     "browser_specific_settings": {
         "gecko": {
             "id": "nightflash@heartlyy.dev",
-            "strict_min_version": "125.0"
+            "data_collection_permissions": {
+                "required": ["none"]
+            }
         }
     }
 }

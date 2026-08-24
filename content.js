@@ -68,8 +68,8 @@ let targetFireflyCount = 40;
 chrome.storage.local.get(['nfFireflies'], (result) => {
     if (result.nfFireflies !== undefined) {
         targetFireflyCount = result.nfFireflies;
-        adjustFireflyCount(targetFireflyCount);
     }
+    adjustFireflyCount(targetFireflyCount);
 });
 
 chrome.storage.onChanged.addListener((changes, namespace) => {
